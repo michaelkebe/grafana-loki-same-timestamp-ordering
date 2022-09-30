@@ -22,20 +22,6 @@ services:
     logging:
       driver: json-file
 
-  #logcli:
-  #  image: grafana/logcli:2.6.1-amd64
-  #  command:
-  #    - query
-  #    #- --forward
-  #    - '{filename="/tmp/logfile.log"}'
-  #    - --since=24h
-  #  environment:
-  #    LOKI_ADDR: http://loki:3100
-  #  depends_on:
-  #    - loki
-  #  logging:
-  #    driver: json-file
-
   grafana:
     image: grafana/grafana:9.1.6
     environment:
@@ -48,4 +34,3 @@ services:
       - loki
     logging:
       driver: json-file
-
