@@ -16,7 +16,7 @@ services:
     command: -config.file=/etc/promtail/promtail-config.yml
     volumes:
       - ./promtail-config.yml:/etc/promtail/promtail-config.yml
-      - ./logfile.log:/tmp/logfile.log
+      - ./tmp/:/tmp
     depends_on:
       - loki
     logging:
@@ -32,5 +32,14 @@ services:
       - ./grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
     depends_on:
       - loki
+    logging:
+      driver: json-file
+
+  logfile-generator:
+    image: busybox
+    command: sh /generate-logfile.sh /tmp/logfile.log
+    volumes:
+      - ./generate-logfile.sh:/generate-logfile.sh
+      - ./tmp/:/tmp
     logging:
       driver: json-file
