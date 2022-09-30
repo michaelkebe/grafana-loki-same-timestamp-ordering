@@ -1,0 +1,51 @@
+version: "3"
+
+services:
+  loki:
+    image: grafana/loki:2.6.1
+    command: -config.file=/etc/loki/loki-config.yml
+    ports:
+      - "3100:3100"
+    volumes:
+      - ./loki-config.yml:/etc/loki/loki-config.yml
+    logging:
+      driver: json-file
+
+  promtail:
+    image: grafana/promtail:2.6.1
+    command: -config.file=/etc/promtail/promtail-config.yml
+    volumes:
+      - ./promtail-config.yml:/etc/promtail/promtail-config.yml
+      - ./logfile.log:/tmp/logfile.log
+    depends_on:
+      - loki
+    logging:
+      driver: json-file
+
+  #logcli:
+  #  image: grafana/logcli:2.6.1-amd64
+  #  command:
+  #    - query
+  #    #- --forward
+  #    - '{filename="/tmp/logfile.log"}'
+  #    - --since=24h
+  #  environment:
+  #    LOKI_ADDR: http://loki:3100
+  #  depends_on:
+  #    - loki
+  #  logging:
+  #    driver: json-file
+
+  grafana:
+    image: grafana/grafana:9.1.6
+    environment:
+      GF_LOG_LEVEL: error
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./grafana-datasources.yml:/etc/grafana/provisioning/datasources/datasources.yml
+    depends_on:
+      - loki
+    logging:
+      driver: json-file
+
